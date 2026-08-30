@@ -67,9 +67,9 @@ class Quiz {
 
 
     // Stores the user's selected answer for the current question.
-    selectedAnswers(answer) {
-        this.selectedAnswers[this.currentQuestionIndex] = answer;
-    }
+   selectAnswer(answer) {
+   this.selectAnswer(answer); [this.currentQuestionIndex] = answer;
+}
 
     // Checks whether the selected answer is correct.
     // The score is recalculated to prevent the same question
@@ -126,7 +126,7 @@ class Quiz {
             this.currentQuestionIndex++;
 
             //Restart the timer for the new question.
-            this.timerStart();
+           this.startTimer();
         } else {
             this.completeQuiz();
         }
@@ -231,7 +231,7 @@ class Quiz {
     savedResult(playerName) {
         // Get existing results from local storage.
         const leaderboard = JSON.parse(
-            localStorage.getItem("quizLearderboard")
+            localStorage.getItem("quizLeaderboard")
         ) || [];
 
         // Create an object containing the quiz result.
@@ -303,3 +303,623 @@ class Quiz {
 
 // Create a Quiz object using questions array.
 const quiz = new Quiz(questions);
+// =============================================
+// SCREEN / USER INTERFACE CONNECTION
+// Connects the Quiz class to the HTML screens
+// =============================================
+
+
+// -----------------------------
+// SCREEN ELEMENTS
+// -----------------------------
+
+const instructionsScreen =
+    document.getElementById("instructions-screen");
+
+const quizScreen =
+    document.getElementById("quiz-screen");
+
+const resultsScreen =
+    document.getElementById("results-screen");
+
+
+// -----------------------------
+// BUTTONS
+// -----------------------------
+
+const startBtn =
+    document.getElementById("start-btn");
+
+const previousBtn =
+    document.getElementById("previous-btn");
+
+const nextBtn =
+    document.getElementById("next-btn");
+
+const finishBtn =
+    document.getElementById("finish-btn");
+
+const retakeBtn =
+    document.getElementById("retake-btn");
+
+const newTopicBtn =
+    document.getElementById("new-topic-btn");
+
+
+// -----------------------------
+// QUESTION DISPLAY ELEMENTS
+// -----------------------------
+
+const questionText =
+    document.getElementById("question-text");
+
+const answerOptionsContainer =
+    document.getElementById("answer-options");
+
+const questionProgress =
+    document.getElementById("question-progress");
+
+const progressPercent =
+    document.getElementById("progress-percent");
+
+const progressFill =
+    document.getElementById("progress-fill");
+
+const currentQuestionNumber =
+    document.getElementById("current-question-number");
+
+const questionNavigator =
+    document.getElementById("question-navigator");
+
+const timerDisplay =
+    document.getElementById("timer");
+
+
+// -----------------------------
+// RESULTS ELEMENTS
+// -----------------------------
+
+const percentageDisplay =
+    document.getElementById("percentage");
+
+const finalScore =
+    document.getElementById("final-score");
+
+const totalQuestions =
+    document.getElementById("total-questions");
+
+const correctCount =
+    document.getElementById("correct-count");
+
+const incorrectCount =
+    document.getElementById("incorrect-count");
+
+const unansweredCount =
+    document.getElementById("unanswered-count");
+
+const reviewContainer =
+    document.getElementById("review-container");
+
+
+// =============================================
+// SHOW A SPECIFIC SCREEN
+// =============================================
+
+function showScreen(screen) {
+
+    instructionsScreen.classList.remove("active");
+    quizScreen.classList.remove("active");
+    resultsScreen.classList.remove("active");
+
+    screen.classList.add("active");
+}
+
+
+// =============================================
+// CREATE QUESTION NAVIGATOR
+// =============================================
+
+function createQuestionNavigator() {
+
+    questionNavigator.innerHTML = "";
+
+    quiz.questions.forEach((question, index) => {
+
+        const button = document.createElement("button");
+
+        button.classList.add("nav-number");
+
+        button.textContent = index + 1;
+
+        if (index === quiz.currentQuestionIndex) {
+            button.classList.add("current");
+        }
+
+        if (quiz.selectedAnswers[index] !== undefined) {
+            button.classList.add("answered");
+        }
+
+        button.addEventListener("click", function () {
+
+            quiz.currentQuestionIndex = index;
+
+            quiz.startTimer();
+
+            displayQuestion();
+
+        });
+
+        questionNavigator.appendChild(button);
+    });
+}
+
+
+// =============================================
+// DISPLAY CURRENT QUESTION
+// =============================================
+
+function displayQuestion() {
+
+    const currentQuestion =
+        quiz.getCurrentQuestion();
+
+    if (!currentQuestion) {
+        return;
+    }
+
+
+    // Display question text
+    questionText.textContent =
+        currentQuestion.question;
+
+
+    // Question number
+    currentQuestionNumber.textContent =
+        quiz.currentQuestionIndex + 1;
+
+
+    // Question progress
+    questionProgress.textContent =
+        `Question ${quiz.currentQuestionIndex + 1} of ${quiz.questions.length}`;
+
+
+    // Progress percentage
+    const progress =
+        Math.round(
+            ((quiz.currentQuestionIndex + 1) /
+                quiz.questions.length) * 100
+        );
+
+
+    progressPercent.textContent =
+        `${progress}%`;
+
+
+    progressFill.style.width =
+        `${progress}%`;
+
+
+    // Clear old answers
+    answerOptionsContainer.innerHTML = "";
+
+
+    // Letters for the answer buttons
+    const letters = ["A", "B", "C", "D"];
+
+
+    // Create answer buttons
+    currentQuestion.options.forEach((option, index) => {
+
+        const button =
+            document.createElement("button");
+
+        button.classList.add("answer-option");
+
+        button.innerHTML = `
+            <span class="option-letter">
+                ${letters[index]}
+            </span>
+
+            <span>
+                ${option}
+            </span>
+        `;
+
+
+        // Show previously selected answer
+        if (
+            quiz.selectedAnswers[
+                quiz.currentQuestionIndex
+            ] === option
+        ) {
+
+            button.classList.add("selected");
+
+        }
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                selectAnswer(option);
+
+            }
+        );
+
+
+        answerOptionsContainer.appendChild(button);
+
+    });
+
+
+    // Previous button
+    previousBtn.disabled =
+        quiz.isFirstQuestion();
+
+
+    // Change Next button on last question
+    if (quiz.isLastQuestion()) {
+
+        nextBtn.style.display = "none";
+        finishBtn.style.display = "inline-block";
+
+    } else {
+
+        nextBtn.style.display = "inline-block";
+        finishBtn.style.display = "inline-block";
+
+    }
+
+
+    createQuestionNavigator();
+}
+
+
+// =============================================
+// SELECT ANSWER
+// =============================================
+
+function selectAnswer(answer) {
+
+    quiz.selectAnswer(answer);
+
+    const answerButtons =
+        document.querySelectorAll(".answer-option");
+
+
+    answerButtons.forEach(button => {
+
+        button.classList.remove("selected");
+
+        const buttonAnswer =
+            button.querySelector("span:last-child")
+                .textContent.trim();
+
+
+        if (buttonAnswer === answer) {
+
+            button.classList.add("selected");
+
+        }
+
+    });
+
+
+    createQuestionNavigator();
+}
+
+
+// =============================================
+// TIMER DISPLAY
+// =============================================
+
+function updateTimerDisplay() {
+
+    timerDisplay.textContent =
+        `${quiz.getTimeRemaining()}s`;
+}
+
+
+// Update timer text every second
+setInterval(() => {
+
+    if (
+        quizScreen.classList.contains("active")
+    ) {
+
+        updateTimerDisplay();
+
+    }
+
+}, 1000);
+
+
+// =============================================
+// START QUIZ
+// =============================================
+
+startBtn.addEventListener(
+    "click",
+    function () {
+
+        quiz.resetQuiz();
+
+        showScreen(quizScreen);
+
+        quiz.startTimer();
+
+        displayQuestion();
+
+    }
+);
+
+
+// =============================================
+// NEXT QUESTION
+// =============================================
+
+nextBtn.addEventListener(
+    "click",
+    function () {
+
+        quiz.nextQuestion();
+
+        if (quiz.isQuizComplete) {
+
+            showResults();
+
+        } else {
+
+            displayQuestion();
+
+        }
+
+    }
+);
+
+
+// =============================================
+// PREVIOUS QUESTION
+// =============================================
+
+previousBtn.addEventListener(
+    "click",
+    function () {
+
+        quiz.previousQuestion();
+
+        displayQuestion();
+
+    }
+);
+
+
+// =============================================
+// FINISH QUIZ
+// =============================================
+
+finishBtn.addEventListener(
+    "click",
+    function () {
+
+        quiz.completeQuiz();
+
+        showResults();
+
+    }
+);
+
+
+// =============================================
+// DISPLAY RESULTS
+// =============================================
+
+function showResults() {
+
+    quiz.completeQuiz();
+
+    showScreen(resultsScreen);
+
+
+    const score =
+        quiz.getScored();
+
+    const total =
+        quiz.questions.length;
+
+    const answered =
+        quiz.getAnsweredCount();
+
+    const incorrect =
+        answered - score;
+
+    const unanswered =
+        total - answered;
+
+
+    percentageDisplay.textContent =
+        `${quiz.getPercentage()}%`;
+
+    finalScore.textContent =
+        score;
+
+    totalQuestions.textContent =
+        total;
+
+    correctCount.textContent =
+        score;
+
+    incorrectCount.textContent =
+        incorrect;
+
+    unansweredCount.textContent =
+        unanswered;
+
+
+    createReview();
+}
+
+
+// =============================================
+// CREATE ANSWER REVIEW
+// =============================================
+
+function createReview() {
+
+    reviewContainer.innerHTML = "";
+
+
+    quiz.questions.forEach(
+        (question, index) => {
+
+            const userAnswer =
+                quiz.selectedAnswers[index];
+
+            const isCorrect =
+                userAnswer === question.correctAnswer;
+
+
+            const reviewItem =
+                document.createElement("div");
+
+
+            reviewItem.classList.add(
+                "review-item"
+            );
+
+
+            if (isCorrect) {
+
+                reviewItem.classList.add(
+                    "correct-review"
+                );
+
+            } else {
+
+                reviewItem.classList.add(
+                    "incorrect-review"
+                );
+
+            }
+
+
+            reviewItem.innerHTML = `
+
+                <div class="review-heading">
+
+                    <strong>
+                        Question ${index + 1}
+                    </strong>
+
+                    <span class="status ${
+                        isCorrect
+                            ? "correct-status"
+                            : "incorrect-status"
+                    }">
+
+                        ${
+                            isCorrect
+                                ? "Correct"
+                                : userAnswer === undefined
+                                ? "Unanswered"
+                                : "Incorrect"
+                        }
+
+                    </span>
+
+                </div>
+
+
+                <p>
+                    ${question.question}
+                </p>
+
+
+                <small>
+
+                    Your answer:
+
+                    <strong>
+                        ${
+                            userAnswer === undefined
+                                ? "No answer"
+                                : userAnswer
+                        }
+                    </strong>
+
+                </small>
+
+
+                ${
+                    !isCorrect
+                        ? `
+                        <small>
+                            Correct answer:
+                            <strong>
+                                ${question.correctAnswer}
+                            </strong>
+                        </small>
+                        `
+                        : ""
+                }
+
+            `;
+
+
+            reviewContainer.appendChild(
+                reviewItem
+            );
+
+        }
+    );
+}
+
+
+// =============================================
+// RETAKE QUIZ
+// =============================================
+
+retakeBtn.addEventListener(
+    "click",
+    function () {
+
+        quiz.resetQuiz();
+
+        showScreen(quizScreen);
+
+        quiz.startTimer();
+
+        displayQuestion();
+
+    }
+);
+
+
+// =============================================
+// CHOOSE NEW TOPIC
+// =============================================
+
+newTopicBtn.addEventListener(
+    "click",
+    function () {
+
+        quiz.resetQuiz();
+
+        showScreen(instructionsScreen);
+
+    }
+);
+
+
+// =============================================
+// INITIAL PAGE INFORMATION
+// =============================================
+
+document.getElementById(
+    "question-count"
+).textContent = questions.length;
+
+
+// Start on instructions screen
+showScreen(instructionsScreen);

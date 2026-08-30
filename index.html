@@ -1,16 +1,362 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <title>Quiz Builders</title>
 
     <!-- CSS Link -->
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    
-    <!-- JavaScript Link -->
+
+    <!-- ===================================== -->
+    <!-- BONGA'S SCREENS SECTION -->
+    <!-- Instructions | Questions | Results -->
+    <!-- ===================================== -->
+
+
+    <!-- ============================= -->
+    <!-- INSTRUCTIONS SCREEN -->
+    <!-- ============================= -->
+
+    <section id="instructions-screen" class="screen active">
+
+        <div class="card instructions-card">
+
+            <span class="screen-label">Quiz Instructions</span>
+
+            <h1 id="instruction-topic">Science Quiz</h1>
+
+            <p class="intro-text">
+                Test your knowledge and see how well you can score.
+                Read the instructions below before starting.
+            </p>
+
+            <div class="quiz-info">
+
+                <div class="info-box">
+                    <span class="info-number" id="question-count">10</span>
+                    <span class="info-label">Questions</span>
+                </div>
+
+                <div class="info-box">
+                    <span class="info-number" id="time-limit">05:00</span>
+                    <span class="info-label">Time Limit</span>
+                </div>
+
+            </div>
+
+            <div class="rules">
+
+                <h2>Rules</h2>
+
+                <ul>
+                    <li>Choose one answer for each question.</li>
+                    <li>You can move between questions using Previous and Next.</li>
+                    <li>Keep an eye on the timer.</li>
+                    <li>Unanswered questions may be marked incorrect.</li>
+                    <li>Click Finish Quiz when you are done.</li>
+                </ul>
+
+            </div>
+
+            <button id="start-btn" class="primary-btn">
+                Start Quiz
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- QUESTION / QUIZ SCREEN -->
+    <!-- ============================= -->
+
+    <section id="quiz-screen" class="screen">
+
+        <div class="quiz-header">
+
+            <div>
+                <p class="small-text">Current Quiz</p>
+                <h2 id="quiz-topic">Science</h2>
+            </div>
+
+            <div class="timer-box">
+                <span>Time Left</span>
+                <strong id="timer">05:00</strong>
+            </div>
+
+        </div>
+
+
+        <!-- Progress -->
+
+        <div class="progress-section">
+
+            <div class="progress-details">
+
+                <span id="question-progress">
+                    Question 1 of 10
+                </span>
+
+                <span id="progress-percent">
+                    10%
+                </span>
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div
+                    id="progress-fill"
+                    class="progress-fill"
+                    style="width: 10%;">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Question Navigator -->
+
+        <div class="question-navigator" id="question-navigator">
+
+            <button class="nav-number current">1</button>
+            <button class="nav-number">2</button>
+            <button class="nav-number">3</button>
+            <button class="nav-number">4</button>
+            <button class="nav-number">5</button>
+            <button class="nav-number">6</button>
+            <button class="nav-number">7</button>
+            <button class="nav-number">8</button>
+            <button class="nav-number">9</button>
+            <button class="nav-number">10</button>
+
+        </div>
+
+
+        <!-- Question Card -->
+
+        <div class="question-card">
+
+            <p class="question-number">
+                Question
+                <span id="current-question-number">1</span>
+            </p>
+
+            <h1 id="question-text">
+                Which planet is known as the Red Planet?
+            </h1>
+
+
+            <!-- Four Answer Options -->
+
+            <div id="answer-options" class="answer-options">
+
+                <button class="answer-option" data-answer="A">
+                    <span class="option-letter">A</span>
+                    <span>Earth</span>
+                </button>
+
+                <button class="answer-option" data-answer="B">
+                    <span class="option-letter">B</span>
+                    <span>Mars</span>
+                </button>
+
+                <button class="answer-option" data-answer="C">
+                    <span class="option-letter">C</span>
+                    <span>Jupiter</span>
+                </button>
+
+                <button class="answer-option" data-answer="D">
+                    <span class="option-letter">D</span>
+                    <span>Venus</span>
+                </button>
+
+            </div>
+
+
+            <!-- Navigation Buttons -->
+
+            <div class="quiz-buttons">
+
+                <button id="previous-btn" class="secondary-btn">
+                    Previous
+                </button>
+
+                <button id="next-btn" class="primary-btn">
+                    Next
+                </button>
+
+                <button id="finish-btn" class="finish-btn">
+                    Finish Quiz
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- RESULTS SCREEN -->
+    <!-- ============================= -->
+
+    <section id="results-screen" class="screen">
+
+        <div class="results-card">
+
+            <div class="result-icon">
+                ✓
+            </div>
+
+            <span class="screen-label">
+                Quiz Complete
+            </span>
+
+            <h1>Your Results</h1>
+
+            <p class="result-message" id="result-message">
+                Great job! Here's how you performed.
+            </p>
+
+
+            <!-- Main Score -->
+
+            <div class="score-circle">
+
+                <span id="percentage">80%</span>
+
+                <small>
+                    <span id="final-score">8</span>
+                    /
+                    <span id="total-questions">10</span>
+                </small>
+
+            </div>
+
+
+            <!-- Result Statistics -->
+
+            <div class="result-stats">
+
+                <div class="stat-card correct-stat">
+                    <strong id="correct-count">8</strong>
+                    <span>Correct</span>
+                </div>
+
+                <div class="stat-card incorrect-stat">
+                    <strong id="incorrect-count">1</strong>
+                    <span>Incorrect</span>
+                </div>
+
+                <div class="stat-card unanswered-stat">
+                    <strong id="unanswered-count">1</strong>
+                    <span>Unanswered</span>
+                </div>
+
+                <div class="stat-card">
+                    <strong id="time-used">03:42</strong>
+                    <span>Time Used</span>
+                </div>
+
+            </div>
+
+
+            <!-- Review Answers -->
+
+            <div class="review-section">
+
+                <h2>Review Answers</h2>
+
+                <div id="review-container">
+
+                    <div class="review-item correct-review">
+
+                        <div class="review-heading">
+
+                            <strong>Question 1</strong>
+
+                            <span class="status correct-status">
+                                Correct
+                            </span>
+
+                        </div>
+
+                        <p>
+                            Which planet is known as the Red Planet?
+                        </p>
+
+                        <small>
+                            Your answer:
+                            <strong>Mars</strong>
+                        </small>
+
+                    </div>
+
+
+                    <div class="review-item incorrect-review">
+
+                        <div class="review-heading">
+
+                            <strong>Question 2</strong>
+
+                            <span class="status incorrect-status">
+                                Incorrect
+                            </span>
+
+                        </div>
+
+                        <p>
+                            What is the largest planet?
+                        </p>
+
+                        <small>
+                            Your answer:
+                            <strong>Mars</strong>
+                        </small>
+
+                        <small>
+                            Correct answer:
+                            <strong>Jupiter</strong>
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Result Buttons -->
+
+            <div class="result-buttons">
+
+                <button id="retake-btn" class="primary-btn">
+                    Retake Quiz
+                </button>
+
+                <button id="new-topic-btn" class="secondary-btn">
+                    Choose New Topic
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Existing group JavaScript -->
     <script src="script.js"></script>
+
 </body>
+
 </html>
