@@ -82,8 +82,8 @@ const topicData = {
 };
 
 // PART 2: QUIZ CLASS / OOP
-// The Quiz class manages the quiz state and the behaviour.
-// It keeps track of questions, score, answers and progress
+// The Quiz class manages the quiz state and behaviour.
+// It keeps track of questions, score, answers and progress.
 
 class Quiz {
 
@@ -102,7 +102,7 @@ class Quiz {
         // Controller can set this to get notified the moment time
         // hits zero, so it can auto-submit — Quiz itself never
         // touches the DOM directly.
-        this.onTimeExpires = null;
+        this.onTimeExpired = null;
     }
 
     // PART 3: ANSWER & SCORING LOGIC
@@ -114,9 +114,9 @@ class Quiz {
 
 
     // Stores the user's selected answer for the current question.
-   selectAnswer(answer) {
-   this.selectedAnswers[this.currentQuestionIndex] = answer;
-}
+    selectAnswer(answer) {
+        this.selectedAnswers[this.currentQuestionIndex] = answer;
+    }
 
     // Checks whether the selected answer is correct.
     // The score is recalculated to prevent the same question
@@ -144,9 +144,9 @@ class Quiz {
         return this.score;
     }
 
-    
+
     // Returns the user's current score.
-    getScored() {
+    getScore() {
         return this.score;
     }
 
@@ -171,11 +171,11 @@ class Quiz {
             }
         });
 
-        return {correct, incorrect, unanswered, total: this.questions.length };
+        return { correct, incorrect, unanswered, total: this.questions.length };
     }
 
 
-    // Return the number of the questions the user has answered.
+    // Returns the number of questions the user has answered.
     getAnsweredCount() {
         return this.selectedAnswers.filter(
             answer => answer !== undefined
@@ -218,13 +218,13 @@ class Quiz {
     }
 
 
-    // Checks whether the current question is the last question.
+    // Checks whether the current question is the final question.
     isLastQuestion() {
         return this.currentQuestionIndex === this.questions.length - 1;
     }
 
 
-        // --- ADDED FOR INTEGRATION ---
+    // --- ADDED FOR INTEGRATION ---
     // Jumps straight to any question by index (needed so the
     // question navigator numbers can jump around, not just
     // move one at a time like nextQuestion()/previousQuestion()).
@@ -235,32 +235,32 @@ class Quiz {
     }
 
 
-    // Returns the current quiz progress
+    // Returns the current quiz progress.
     // Example: 1/10, 2/10, 3/10.
     getProgress() {
-        return `${this.currentQuestionIndex + 1} / ${this.questions.length}`;
+        return `${this.currentQuestionIndex + 1}/${this.questions.length}`;
     }
 
 
-    // Marks the quiz as completed and calculate the final score.
+    // Marks the quiz as completed and calculates the final score.
     completeQuiz() {
-        // Stop the timer when quiz ends.
+        // Stop the timer when the quiz ends.
         this.stopTimer();
 
         // Calculate the final score.
         this.calculateScore();
 
-        // Mark the quiz as completed.
+        // Mark the quiz as complete.
         this.isQuizComplete = true;
     }
 
 
-    //Reset the quiz so the user can start again.
+    // Resets the quiz so the user can start again.
     resetQuiz() {
         // Stop the current timer.
         this.stopTimer();
 
-        //Reset the quiz back to the beginnig.
+        // Reset the quiz back to the beginning.
         this.currentQuestionIndex = 0;
         this.score = 0;
         this.selectedAnswers = [];
@@ -268,117 +268,117 @@ class Quiz {
         this.timeRemaining = TOTAL_QUIZ_TIME_SECONDS;
     }
 
-    // PART 5: PER QUESTION TIMER.
-    
-    // --- CHANGED DURING INTEGRATION ---
-    // This used to reset to 30/60s and restart on every question
-    // (per-question timer). It now runs once for the entire quiz.
-    startTimer() {
-        // Stop any existing timer before starting a new one.
-        this.stopTimer();
+// PART 5: WHOLE-QUIZ TIMER
 
-        // Start the countdown from wherever timeRemaining currently is
-        // (NOT reset here — resetting only happens in resetQuiz()).
-        this.timer = setInterval(() => {
-            this.timeRemaining--;
+// --- CHANGED DURING INTEGRATION ---
+// This used to reset to 30/60s and restart on every question
+// (per-question timer). It now runs once for the entire quiz.
+startTimer() {
+    // Stop any existing timer before starting a new one.
+    this.stopTimer();
 
-            // When the timer reaches zero, the whole quiz is over —
-            // stop the timer, mark it complete, and let the controller
-            // know so it can show the results screen.
-            if (this.timeRemaining <= 0) {
-                this.timeRemaining = 0;
-                this.completeQuiz();
-                if (this.onTimeExpires) this.onTimeExpires();
-            }
-        }, 1000);
-    }
+    // Start the countdown from wherever timeRemaining currently is
+    // (NOT reset here — resetting only happens in resetQuiz()).
+    this.timer = setInterval(() => {
+        this.timeRemaining--;
 
-    // Stops the current countdown.
-    stopTimer() {
-        if (this.timer) {
-            clearInterval(this.timer);
-            this.timer = null;
+        // When the timer reaches zero, the whole quiz is over —
+        // stop the timer, mark it complete, and let the controller
+        // know so it can show the results screen.
+        if (this.timeRemaining <= 0) {
+            this.timeRemaining = 0;
+            this.completeQuiz();
+            if (this.onTimeExpired) this.onTimeExpired();
         }
+    }, 1000);
+}
+
+// Stops the current countdown.
+stopTimer() {
+    if (this.timer) {
+        clearInterval(this.timer);
+        this.timer = null;
+    }
+}
+
+// Returns the amount of time remaining.
+getTimeRemaining() {
+    return this.timeRemaining;
+}
+
+// PART 6: LEADERBOARD / LOCAL STORAGE
+
+// Saves the user's quiz result.
+saveResult(playerName) {
+    // Get existing results from local storage.
+    const leaderboard = JSON.parse(
+        localStorage.getItem("quizLeaderboard")
+    ) || [];
+
+    // Create an object containing the quiz result.
+    const result = {
+        playerName: playerName,
+        score: this.getScore(),
+        totalQuestions: this.questions.length,
+        percentage: this.getPercentage(),
+        date: new Date().toLocaleDateString()
+    };
+
+    // Add the new result to the leaderboard.
+    leaderboard.push(result);
+
+    // Sort results from highest score to lowest score.
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    // Save the updated leaderboard.
+    localStorage.setItem(
+        "quizLeaderboard",
+        JSON.stringify(leaderboard)
+    );
+}
+
+// Gets all saved leaderboard results.
+getLeaderboard() {
+    return JSON.parse(
+        localStorage.getItem("quizLeaderboard")
+    ) || [];
+}
+
+// Clears all saved leaderboard results.
+clearLeaderboard() {
+    localStorage.removeItem("quizLeaderboard");
+}
+
+// PART 7: DIFFICULTY LEVELS
+
+// Filters the questions based on the selected difficulty.
+filterByDifficulty(difficulty) {
+    // If "all" is selected, return all original questions.
+    if (difficulty === "all") {
+        return this.allQuestions;
     }
 
-    // Returns the amount of time remaining
-    getTimeRemaining() {
-        return this.timeRemaining;
-    }
+    // Filter the original questions by difficulty.
+    return this.allQuestions.filter(question =>
+        question.difficulty === difficulty
+    );
+}
 
-    // PART 6: LEADERBOARD / LOCAL STORAGE
+// Changes the questions used by the quiz
+// based on the selected difficulty.
+setDifficulty(difficulty) {
+    // Stop any existing timer.
+    this.stopTimer();
 
-    // Saves the user's quiz result.
-    savedResult(playerName) {
-        // Get existing results from local storage.
-        const leaderboard = JSON.parse(
-            localStorage.getItem("quizLeaderboard")
-        ) || [];
+    // Change the questions based on the selected difficulty.
+    this.questions = this.filterByDifficulty(difficulty);
 
-        // Create an object containing the quiz result.
-        const result = {
-            playerName: playerName,
-            score: this.getScored(),
-            totalQuestions: this.questions.length,
-            percentage: this.getPercentage(),
-            date: new Date().toLocaleDateString()
-        };
-
-        // Add the new result to the leaderboard
-        leaderboard.push(result);
-
-        // Sort results from highest score to lowest score.
-        leaderboard.sort((a, b) => b.score - a.score);
-
-        // Save the updated leaderboard.
-        localStorage.setItem(
-            "quizLeaderboard",
-            JSON.stringify(leaderboard)
-        );
-    }
-
-    // Gets all saved leaderboard results.
-    getLeaderboard() {
-        return JSON.parse(
-            localStorage.getItem("quizLeaderboard")
-        ) || [];
-    }
-
-    // Clear all saved leaderboard results.
-    clearLeaderboard() {
-        localStorage.removeItem("quizLeaderboard");
-    }
-
-    // PART 7: DIFFICULTY LEVELS
-
-    // Filter the questions based on the selected difficulty.
-    filterByDifficulty(difficulty) {
-        // If "all" is selected, return all original questions.
-        if (difficulty === "all") {
-            return this.allQuestions;
-        }
-
-        // Filter the original questions by difficulty.
-        return this.allQuestions.filter(
-            question => question.difficulty === difficulty
-        );
-    }
-
-    //Changes the questions used by the quiz
-    // based on the selected difficulty.
-    setDifficulty(difficulty) {
-        // Stop any existing timer.
-        this.stopTimer();
-
-        // Change the questions based on the selected difficulty.
-        this.questions = this.filterByDifficulty(difficulty);
-
-        // Reset the quiz so it starts from the first question.
-        this.currentQuestionIndex = 0;
-        this.score = 0;
-        this.selectedAnswers = [];
-        this.isQuizComplete = false;
-    }
+    // Reset the quiz so it starts from the first question.
+    this.currentQuestionIndex = 0;
+    this.score = 0;
+    this.selectedAnswers = [];
+    this.isQuizComplete = false;
+}
 }
 
 
@@ -398,12 +398,12 @@ const TOPIC_META = {
 
 class QuizApp {
     constructor(topicData) {
-        this,topicData = topicData;
+        this.topicData = topicData;
         this.quiz = null; // created once a topic is chosen
         this.announcedLevels = new Set(); // tracks which difficulty overlays have shown this attempt
 
         this.el = {
-            SelectionScreen: document.getElementById("selection-screen"),
+            selectionScreen: document.getElementById("selection-screen"),
             topicCards: document.getElementById("topic-cards"),
 
             instructionsScreen: document.getElementById("instructions-screen"),

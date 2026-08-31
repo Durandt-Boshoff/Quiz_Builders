@@ -21,7 +21,7 @@ body {
     color: #1d2433;
     min-height: 100vh;
 
-    background: 
+    background:
         radial-gradient(circle at 10% 0%, rgba(99, 91, 255, 0.16), transparent 45%),
         radial-gradient(circle at 90% 15%, rgba(236, 72, 153, 0.12), transparent 40%),
         radial-gradient(circle at 50% 100%, rgba(34, 197, 94, 0.08), transparent 40%),
@@ -55,8 +55,8 @@ h1, h2 {
 }
 
 @keyframes screenIn {
-    from { opacity: 0; transform: translateY(10px);}
-    to { opacity: 1; transform: translateY(0);}
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 
@@ -71,9 +71,9 @@ h1, h2 {
     backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 24px;
-    box-shadow: 
+    box-shadow:
         0 20px 50px rgba(99, 91, 255, 0.12),
-        0 8px 12px rgba(0, 0, 0, 0.04);
+        0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 
@@ -307,7 +307,7 @@ h1, h2 {
     animation: timerPulse 1s infinite;
 }
 
-@keyframes timerPlus {
+@keyframes timerPulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.5; transform: scale(1.05); }
 }
@@ -409,8 +409,8 @@ h1, h2 {
 }
 
 @keyframes questionIn {
-    from { opacity: 0; transform: translateY(8px);}
-    to { opacity: 1; transform: translateY(0);}
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 
@@ -447,7 +447,7 @@ h1, h2 {
 .answer-option:hover {
     border-color: #635bff;
     background: #f8f7ff;
-    transform: translateY(4px);
+    transform: translateX(4px);
 }
 
 
@@ -554,8 +554,8 @@ h1, h2 {
 }
 
 @keyframes iconPop {
-    from { transform: scale(0) rotate(-20deg); opacity: 0;}
-    to { transform: scale(1) rotate(0deg); opacity: 1;}
+    from { transform: scale(0) rotate(-20deg); opacity: 0; }
+    to { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
 .results-card h1 {
@@ -585,16 +585,16 @@ h1, h2 {
     position: relative;
 
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 
     box-shadow: 0 12px 28px rgba(99, 91, 255, 0.25);
     animation: ringIn 0.6s ease;
 }
 
 @keyframes ringIn {
-    from { transform: scale(0.7); opacity: 0;}
-    to { transform: scale(1); opacity: 1;}
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 .score-circle::before {
@@ -619,7 +619,7 @@ h1, h2 {
 
 .score-circle small {
     margin-top: 5px;
-    color: #6b7280
+    color: #6b7280;
 }
 
 
@@ -642,7 +642,7 @@ h1, h2 {
 }
 
 .stat-card:hover {
-    transform: translateY(-3px)
+    transform: translateY(-3px);
 }
 
 .stat-card strong {
@@ -696,13 +696,13 @@ h1, h2 {
 .review-item {
     padding: 20px;
     margin-bottom: 15px;
-    border-radius: 12px;
+    border-radius: 14px;
     background: #f9fafb;
     transition: transform 0.15s ease;
 }
 
 .review-item:hover {
-    transform: translateY(3px);
+    transform: translateX(3px);
 }
 
 .review-heading {
@@ -847,7 +847,7 @@ h1, h2 {
 }
 
 .topic-count {
-    display: inline-flex;
+    display: inline-block;
     background: linear-gradient(135deg, #635bff, #8b5cf6);
     color: white;
     font-size: 12px;
@@ -856,7 +856,7 @@ h1, h2 {
     border-radius: 999px;
 }
 
-/*Level-up overlay */
+/* Level-up overlay */
 
 .level-overlay {
     display: none;
@@ -898,15 +898,15 @@ h1, h2 {
 }
 
 @keyframes levelPop {
-    from { transform: scale(0.7); opacity: 0;}
-    to { transform: scale(1); opacity: 1;}
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 @keyframes overlayFade {
-    0% {opacity: 0;}
-    15% {opacity: 1;}
-    85% {opacity: 1;}
-    100% {opacity: 0;}
+    0% { opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
 }
 
 /* Confetti burst */
@@ -931,8 +931,8 @@ h1, h2 {
 }
 
 @keyframes confettiFall {
-    0% { transform: translateY(0) rotate(0deg); opacity: 1;}
-    100% { transform: translateY(440px) rotate(600deg); opacity: 0;}
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(440px) rotate(600deg); opacity: 0; }
 }
 
 
