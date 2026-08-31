@@ -1,6 +1,9 @@
 /* ==========================================
    QUIZ BUILDERS - SCREEN STYLING
    Instructions | Questions | Results
+   (Visual upgrade pass — all class/ID names
+   kept identical to the original so script.js
+   needs zero changes)
 ========================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
@@ -175,6 +178,35 @@ h1, h2 {
 
 
 /* ========================
+   BACK ARROW (instructions screen only —
+   once the quiz itself starts, there is no
+   way back, so this button only ever
+   appears here)
+======================== */
+
+.back-arrow-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: #635bff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 10px 6px 0;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: transform 0.15s ease, color 0.2s ease;
+}
+
+.back-arrow-btn:hover {
+    color: #4a42e0;
+    transform: translateX(-3px);
+}
+
+
+/* ========================
    BUTTONS
 ======================== */
 
@@ -187,10 +219,7 @@ h1, h2 {
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    transition: 
-        transform 0.15s ease,
-        box-shadow 0.15s ease,
-        background 0.2s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
 }
 
 
@@ -363,9 +392,7 @@ h1, h2 {
     background: #e5e7eb;
     cursor: pointer;
     font-weight: 600;
-    transition: 
-        transform 0.15s ease,
-        background 0.2s ease;
+    transition: transform 0.15s ease, background 0.2s ease;
 }
 
 .nav-number:hover {

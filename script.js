@@ -9,6 +9,7 @@
 // time budget for all 15 questions combined. Change this one number
 // to make the whole quiz longer or shorter.
 const TOTAL_QUIZ_TIME_SECONDS = 600; // 10:00 for 15 questions
+// --- END CHANGED ---
 
 const topicData = {
   history: [
@@ -81,6 +82,36 @@ const topicData = {
   ],
 };
 
+// --- ADDED: mix question order by difficulty ---
+// Questions above are grouped 5 easy / 5 medium / 5 hard per topic.
+// This reorders each topic's list into a round-robin pattern
+// (easy, medium, hard, easy, medium, hard, ...) so difficulty is
+// mixed through the quiz instead of ramping in three flat blocks.
+// The "level up" overlay logic in QuizApp only fires the first time
+// a difficulty is seen, so this still reads correctly: it announces
+// Easy, then Medium, then Hard within the first three questions,
+// then plays normally with no further interruptions.
+function interleaveByDifficulty(questions) {
+    const order = ["easy", "medium", "hard"];
+    const groups = order.map((level) => questions.filter((q) => q.difficulty === level));
+    // Any question with an unrecognized/missing difficulty is kept at the end, untouched.
+    const leftover = questions.filter((q) => !order.includes(q.difficulty));
+
+    const mixed = [];
+    const maxLen = Math.max(...groups.map((g) => g.length));
+    for (let i = 0; i < maxLen; i++) {
+        groups.forEach((group) => {
+            if (group[i]) mixed.push(group[i]);
+        });
+    }
+    return mixed.concat(leftover);
+}
+
+Object.keys(topicData).forEach((key) => {
+    topicData[key] = interleaveByDifficulty(topicData[key]);
+});
+// --- END ADDED ---
+
 // PART 2: QUIZ CLASS / OOP
 // The Quiz class manages the quiz state and behaviour.
 // It keeps track of questions, score, answers and progress.
@@ -103,6 +134,7 @@ class Quiz {
         // hits zero, so it can auto-submit — Quiz itself never
         // touches the DOM directly.
         this.onTimeExpired = null;
+        // --- END CHANGED ---
     }
 
     // PART 3: ANSWER & SCORING LOGIC
@@ -173,6 +205,7 @@ class Quiz {
 
         return { correct, incorrect, unanswered, total: this.questions.length };
     }
+    // --- END ADDED ---
 
 
     // Returns the number of questions the user has answered.
@@ -233,6 +266,7 @@ class Quiz {
             this.currentQuestionIndex = index;
         }
     }
+    // --- END ADDED ---
 
 
     // Returns the current quiz progress.
@@ -292,6 +326,7 @@ startTimer() {
         }
     }, 1000);
 }
+// --- END CHANGED ---
 
 // Stops the current countdown.
 stopTimer() {
@@ -411,6 +446,7 @@ class QuizApp {
             questionCount: document.getElementById("question-count"),
             timeLimit: document.getElementById("time-limit"),
             startBtn: document.getElementById("start-btn"),
+            backToSelectionBtn: document.getElementById("back-to-selection-btn"),
 
             quizScreen: document.getElementById("quiz-screen"),
             quizTopic: document.getElementById("quiz-topic"),
@@ -701,6 +737,14 @@ class QuizApp {
     // ---- Static listeners ----
     attachListeners() {
         this.el.startBtn.addEventListener("click", () => this.startQuiz());
+
+        // Only available on the instructions screen — once startQuiz() runs
+        // and the quiz screen is shown, this button is gone, so there's no
+        // way back into an in-progress quiz.
+        this.el.backToSelectionBtn.addEventListener("click", () => {
+            this.quiz = null;
+            this.showScreen(this.el.selectionScreen);
+        });
 
         this.el.previousBtn.addEventListener("click", () => {
             this.quiz.previousQuestion();
