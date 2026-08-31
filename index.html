@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Quiz Builders</title>
+    <title>Quiz Verse</title>
 
     <!-- CSS Link -->
     <link rel="stylesheet" href="style.css">
@@ -20,10 +20,29 @@
 
 
     <!-- ============================= -->
+    <!-- TOPIC SELECTION SCREEN (added during integration) -->
+    <!-- ============================= -->
+
+    <section id="selection-screen" class="screen active">
+
+        <div class="card selection-card">
+
+            <span class="screen-label">Choose your challenge</span>
+            <h1>Select a Quiz Topic!</h1>
+            <p class="intro-text">Pick a topic below to see the questions and start.</p>
+
+            <div id="topic-cards" class="topic-grid"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ============================= -->
     <!-- INSTRUCTIONS SCREEN -->
     <!-- ============================= -->
 
-    <section id="instructions-screen" class="screen active">
+    <section id="instructions-screen" class="screen">
 
         <div class="card instructions-card">
 
@@ -211,6 +230,8 @@
 
     <section id="results-screen" class="screen">
 
+        <div id="confetti-burst" class="confetti-burst"></div>
+
         <div class="results-card">
 
             <div class="result-icon">
@@ -354,6 +375,14 @@
     </section>
 
 
+    <!-- Level-up announcement overlay (added during integration) -->
+    <div id="level-overlay" class="level-overlay">
+        <div class="level-box">
+            <span class="level-icon">⚡</span>
+            <span id="level-overlay-text" class="level-text"></span>
+        </div>
+    </div>
+    
     <!-- Existing group JavaScript -->
     <script src="script.js"></script>
 
